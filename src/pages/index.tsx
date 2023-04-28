@@ -3,6 +3,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Button from "~/components/Button";
 import Header from "~/components/Header";
+import PageContainer from "~/components/PageContainer";
 
 // "https://create.t3.gg/en/usage/first-steps"
 
@@ -14,16 +15,15 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
-        <Flex
-          flexDirection="column"
-          width="100%"
-          background="url('leaf-background.jpg') repeat"
-          backgroundSize="cover"
-          minHeight="100vh"
-          gap="100px"
-        >
+        <PageContainer>
           <Header />
-          <Flex width="80%" marginX="auto" flexBasis="40%" flexWrap="wrap" rowGap="64px">
+          <Flex
+            width="80%"
+            marginX="auto"
+            flexBasis="40%"
+            flexWrap="wrap"
+            rowGap="64px"
+          >
             <Button
               label="Meine Rezepte"
               href="/add-recipe"
@@ -49,7 +49,7 @@ const Home: NextPage = () => {
               }
             />
           </Flex>
-        </Flex>
+        </PageContainer>
       </main>
     </>
   );

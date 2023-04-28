@@ -10,6 +10,8 @@ import { api } from "../utils/api";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
+import PageContainer from "~/components/PageContainer";
+import IngredientList from "~/components/IngredientList";
 
 // Logo Bild hinzufügen
 // https://github.com/simone1999/IceCreamSwapUiNew/blob/IcecreamSwap/apps/web/src/views/CreateToken/create-schema.ts
@@ -53,14 +55,7 @@ const AddRecipe: NextPage = () => {
       </Head>
       <main>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <Flex
-            flexDirection="column"
-            width="100%"
-            background="url('leaf-background.jpg') no-repeat center center fixed"
-            backgroundSize="cover"
-            height="100vh"
-            gap="100px"
-          >
+          <PageContainer>
             <Header />
             <Flex flexDirection="column" width="80%" marginX="auto" gap="32px">
               <Flex
@@ -107,10 +102,11 @@ const AddRecipe: NextPage = () => {
                   opacity=".9"
                   _focusVisible={{ opacity: "1" }}
                 />
+                <IngredientList />
               </Flex>
             </Flex>
             <Button label="Erstellen" type="submit" />
-          </Flex>
+          </PageContainer>
         </form>
       </main>
     </>
