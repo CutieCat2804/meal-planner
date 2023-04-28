@@ -16,10 +16,20 @@ export const exampleRouter = createTRPCRouter({
     }),
 
   getAll: publicProcedure.query(({ ctx }) => {
-    return ctx.prisma.example.findMany();
+    return ctx.prisma.post.findMany({
+      where: { title: { contains: "s" }, duration: "1" },
+    });
   }),
 
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
+
+  addNewRecipe: publicProcedure
+    .input(z.object({ title: z.string(), duration: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      await ctx.prisma.post.create({
+        data: { title: input.title, duration: input.duration },
+      });
+    }),
 });
