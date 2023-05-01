@@ -52,8 +52,18 @@ model User {
 }
 
 model Post {
-    id          Int    @id @default(autoincrement())
-    title       String @unique
-    duration    String
-    description String
+    id          Int          @id @default(autoincrement())
+    title       String
+    duration    String?
+    description String?
+    portion     String?
+    ingredients Ingredient[]
+}
+
+model Ingredient {
+    id         Int     @id @default(autoincrement())
+    ingredient String
+    quantity   String?
+    Post       Post?   @relation(fields: [postId], references: [id])
+    postId     Int?
 }

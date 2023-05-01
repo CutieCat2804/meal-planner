@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { formValuesSchema } from "~/interface/FormValues";
 import { createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 
 export const recipesRouter = createTRPCRouter({
@@ -14,10 +14,20 @@ export const recipesRouter = createTRPCRouter({
   }),
 
   addNewRecipe: publicProcedure
-    .input(z.object({ title: z.string(), duration: z.string() }))
+    .input(formValuesSchema)
     .mutation(async ({ ctx, input }) => {
       await ctx.prisma.post.create({
-        data: { title: input.title, duration: input.duration },
+        data: {
+          title: input.title,
+          duration: input.duration,
+          description: input.description,
+          portion: input.portion,
+          ingredients: {
+            create: input.ingredients.filter(
+              (ingredient) => ingredient.ingredient
+            ),
+          },
+        },
       });
     }),
 });

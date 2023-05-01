@@ -12,7 +12,8 @@ const PageContainer: React.FC<{ children: ReactNode }> = (props) => {
       background="url('leaf-background.jpg') repeat center center fixed"
       backgroundSize="cover"
       minHeight="100vh"
-      gap="100px"
+      gap="32px"
+      paddingBottom="24px"
     >
       {children}
     </Flex>

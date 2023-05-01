@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { Flex, Textarea, chakra } from "@chakra-ui/react";
+import { Flex, Textarea, chakra, Heading } from "@chakra-ui/react";
 import { type NextPage } from "next";
 import Head from "next/head";
 import Button from "~/components/Button";
@@ -7,7 +7,8 @@ import Header from "~/components/Header";
 import Input from "~/components/Input";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "../utils/api";
-import { z } from "zod";
+import { formValuesSchema } from "~/interface/FormValues";
+import type { FormValues } from "~/interface/FormValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import PageContainer from "~/components/PageContainer";
@@ -17,31 +18,26 @@ import IngredientList from "~/components/IngredientList";
 // https://github.com/simone1999/IceCreamSwapUiNew/blob/IcecreamSwap/apps/web/src/views/CreateToken/create-schema.ts
 // https://github.com/simone1999/IceCreamSwapUiNew/blob/IcecreamSwap/apps/web/src/views/CreateToken/index.tsx
 
-const schema = z.object({
-  //   tokenName: z.string().min(1, 'Token name must be at least 1 character'),
-  // {errors.tokenName && <FormError>{errors.tokenName.message}</FormError>}
-  title: z.string(),
-  duration: z.string(),
-});
-
-export type FormValues = z.infer<typeof schema>;
-
 const AddRecipe: NextPage = () => {
   const {
     handleSubmit,
     register,
-    // formState: { errors },
+    control,
+    formState: { errors },
   } = useForm<FormValues>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(formValuesSchema),
   });
   const addNewRecipe = api.router.addNewRecipe.useMutation();
 
   const router = useRouter();
-
+  console.log(errors);
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
     await addNewRecipe.mutateAsync({
       title: data.title,
       duration: data.duration,
+      description: data.description,
+      portion: data.portion,
+      ingredients: data.ingredients,
     });
 
     await router.push("/");
@@ -57,7 +53,12 @@ const AddRecipe: NextPage = () => {
         <form onSubmit={handleSubmit(onSubmit)}>
           <PageContainer>
             <Header />
-            <Flex flexDirection="column" width="80%" marginX="auto" gap="32px">
+            <Flex
+              flexDirection="column"
+              width={{ base: "95%", xl: "40%" }}
+              marginX="auto"
+              gap="32px"
+            >
               <Flex
                 background="#fff"
                 height="200px"
@@ -68,7 +69,7 @@ const AddRecipe: NextPage = () => {
                 justifyContent="center"
                 fontWeight="bold"
                 fontSize="xl"
-                color="#5C892C"
+                color="primary"
                 gap="12px"
                 opacity=".9"
                 _hover={{ opacity: "1" }}
@@ -77,7 +78,7 @@ const AddRecipe: NextPage = () => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 512 512"
                   height="32px"
-                  fill="#5C892C"
+                  fill="primary"
                 >
                   <path d="M149.1 64.8L138.7 96H64C28.7 96 0 124.7 0 160V416c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V160c0-35.3-28.7-64-64-64H373.3L362.9 64.8C356.4 45.2 338.1 32 317.4 32H194.6c-20.7 0-39 13.2-45.5 32.8zM256 192a96 96 0 1 1 0 192 96 96 0 1 1 0-192z" />
                 </chakra.svg>
@@ -92,17 +93,28 @@ const AddRecipe: NextPage = () => {
                   name="duration"
                   register={register}
                 />
-                {/* <Input placeholder="Portionen" />
-                <Input placeholder="Kategorie" /> */}
+                <Input
+                  placeholder="Portionen"
+                  name="portion"
+                  register={register}
+                />
               </Flex>
-              <Flex>
+              <IngredientList
+                control={control}
+                register={register}
+                handleSubmit={handleSubmit}
+              />
+              <Flex flexDirection="column" rowGap="16px">
+                <Heading size="2xl" textAlign="center">
+                  Anleitung
+                </Heading>
                 <Textarea
-                  placeholder="Beschreibung"
+                  placeholder="Anleitung"
                   background="#fff"
                   opacity=".9"
                   _focusVisible={{ opacity: "1" }}
+                  {...register("description")}
                 />
-                <IngredientList />
               </Flex>
             </Flex>
             <Button label="Erstellen" type="submit" />
