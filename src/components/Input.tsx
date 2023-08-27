@@ -10,10 +10,13 @@ interface InputProps extends ChakraProps {
     | `ingredients.${number}.quantity`
     | `ingredients.${number}.ingredient`;
   register: UseFormRegister<FormValues>;
+  defaultValue?: string | null;
 }
 
 const Input: React.FC<InputProps> = (props) => {
-  const { placeholder, register, name, ...rest } = props;
+  const { placeholder, register, name, defaultValue, ...rest } = props;
+
+  const [value, setValue] = React.useState(defaultValue)
 
   return (
     <ChakraInput
@@ -25,6 +28,8 @@ const Input: React.FC<InputProps> = (props) => {
       opacity=".9"
       _focusVisible={{ opacity: "1" }}
       autoComplete="off"
+      onChange={(event) => setValue(event.target.value)}
+      value={value || ''}
     />
   );
 };

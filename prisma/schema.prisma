@@ -51,19 +51,20 @@ model User {
     sessions      Session[]
 }
 
-model Post {
+model Recipe {
     id          Int          @id @default(autoincrement())
     title       String
     duration    String?
     description String?
     portion     String?
     ingredients Ingredient[]
+    image       String?
 }
 
 model Ingredient {
     id         Int     @id @default(autoincrement())
     ingredient String
     quantity   String?
-    Post       Post?   @relation(fields: [postId], references: [id])
-    postId     Int?
+    Recipe     Recipe? @relation(fields: [recipeId], references: [id])
+    recipeId     Int?
 }

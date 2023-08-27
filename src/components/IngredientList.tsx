@@ -10,14 +10,20 @@ import type { FormValues } from "~/interface/FormValues";
 import Button from "./Button";
 import Input from "./Input";
 
+interface Ingredient {
+  ingredient: string;
+  quantity: string | null;
+}
+
 interface IngredientListProps {
   handleSubmit: UseFormHandleSubmit<FormValues>;
   register: UseFormRegister<FormValues>;
   control: Control<FormValues>;
+  ingredients?: Ingredient[];
 }
 
 const IngredientList: React.FC<IngredientListProps> = (props) => {
-  const { register, control } = props;
+  const { register, control, ingredients } = props;
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -42,11 +48,13 @@ const IngredientList: React.FC<IngredientListProps> = (props) => {
                 name={`ingredients.${index}.quantity`}
                 register={register}
                 width="40%"
+                defaultValue={ingredients && ingredients[index]?.quantity}
               />
               <Input
                 placeholder="Zutat"
                 name={`ingredients.${index}.ingredient`}
                 register={register}
+                defaultValue={ingredients && ingredients[index]?.ingredient}
               />
 
               <Button

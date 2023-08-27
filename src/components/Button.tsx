@@ -45,10 +45,12 @@ const Button: React.FC<ButtonProps> = (props) => {
           gap="12px"
           opacity=".9"
           borderRadius="20px"
-          padding="12px 20px"
+          padding={href ? "8px 20px":"12px 20px"}
           alignItems="center"
           justifyContent="center"
-          isDisabled={disabled}
+          fontWeight="bold"
+          fontSize="lg"
+          disabled={disabled}
           {...rest}
         >
           {svg && (
@@ -81,7 +83,7 @@ const Button: React.FC<ButtonProps> = (props) => {
                   {svg.path}
                 </chakra.svg>
               }
-              isDisabled={disabled}
+              disabled={disabled}
               {...rest}
             />
           )}
