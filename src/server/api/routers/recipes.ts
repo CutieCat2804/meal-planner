@@ -1,5 +1,7 @@
+import type { Recipe } from "@prisma/client";
 import { z } from "zod";
 import {
+  type FormValues,
   formValuesSchema,
   formValuesWithIdSchema,
 } from "~/interface/FormValues";
@@ -12,18 +14,18 @@ export const recipesRouter = createTRPCRouter({
 
   getRecipe: publicProcedure
     .input(z.object({ id: z.number() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.recipe.findUnique({
+    .query(async ({ ctx, input }) => {
+      const recipe: Recipe | null = await ctx.prisma.recipe.findUnique({
         where: { id: input.id },
       });
-    }),
+      try {
+        if (recipe?.ingredients) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          recipe.ingredients = JSON.parse(recipe.ingredients);
+        }
+      } catch (_) {}
 
-  getIngredients: publicProcedure
-    .input(z.object({ recipeId: z.number() }))
-    .query(({ ctx, input }) => {
-      return ctx.prisma.ingredient.findMany({
-        where: { recipeId: input.recipeId },
-      });
+      return recipe as unknown as FormValues;
     }),
 
   editRecipe: publicProcedure
@@ -36,11 +38,7 @@ export const recipesRouter = createTRPCRouter({
           duration: input.data.duration,
           description: input.data.description,
           portion: input.data.portion,
-          ingredients: {
-            create: input.data.ingredients.filter(
-              (ingredient) => ingredient.ingredient
-            ),
-          },
+          ingredients: JSON.stringify(input.data.ingredients),
           image: input.data.image?.blob || null,
         },
       });
@@ -55,11 +53,7 @@ export const recipesRouter = createTRPCRouter({
           duration: input.duration,
           description: input.description,
           portion: input.portion,
-          ingredients: {
-            create: input.ingredients.filter(
-              (ingredient) => ingredient.ingredient
-            ),
-          },
+          ingredients: JSON.stringify(input.ingredients),
           image: input.image?.blob || null,
         },
       });

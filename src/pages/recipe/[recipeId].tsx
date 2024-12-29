@@ -16,10 +16,6 @@ const Recipe: NextPage = () => {
   });
   const recipeData = recipe.data;
 
-  const ingredients = api.router.getIngredients.useQuery({
-    recipeId: Number(router.query.recipeId),
-  }).data;
-
   if (recipe.isLoading) {
     return <></>;
   }
@@ -102,8 +98,8 @@ const Recipe: NextPage = () => {
                 </Heading>
 
                 <Box display="grid" gridTemplateColumns="1fr 1fr" gap="0 16px">
-                  {ingredients &&
-                    ingredients.map((ingredient) => (
+                  {recipeData.ingredients &&
+                    recipeData.ingredients.map((ingredient) => (
                       <>
                         <Text>{ingredient.quantity}</Text>
                         <Text>{ingredient.ingredient}</Text>

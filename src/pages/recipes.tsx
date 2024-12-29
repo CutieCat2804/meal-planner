@@ -109,25 +109,23 @@ const Recipes: NextPage = () => {
                           gap="8px"
                           justifyContent={{ base: "center", md: "left" }}
                         >
-                          {recipe.duration && (
-                            <Text>
-                              <chakra.b>Dauer:</chakra.b> {recipe.duration}
-                            </Text>
-                          )}
-                          {recipe.portion && (
-                            <Text>
-                              <chakra.b>Portionen:</chakra.b> {recipe.portion}
-                            </Text>
-                          )}
-                        </Flex>
-                        {recipe.description && (
                           <Text>
-                            <chakra.b>Beschreibung:</chakra.b>{" "}
-                            {recipe.description.length > 100
-                              ? recipe.description.slice(0, 100 - 1) + "..."
-                              : recipe.description}
+                            <chakra.b>Dauer:</chakra.b>{" "}
+                            {recipe.duration ? recipe.duration : "-"}
                           </Text>
-                        )}
+                          <Text>
+                            <chakra.b>Portionen:</chakra.b>{" "}
+                            {recipe.portion ? recipe.portion : "-"}
+                          </Text>
+                        </Flex>
+                        <Text>
+                          <chakra.b>Beschreibung:</chakra.b>{" "}
+                          {recipe.description
+                            ? recipe.description.length > 100
+                              ? recipe.description.slice(0, 100 - 1) + "..."
+                              : recipe.description
+                            : "-"}
+                        </Text>
                       </Flex>
                     </Flex>
                   </LinkBox>

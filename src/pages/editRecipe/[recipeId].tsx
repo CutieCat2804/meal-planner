@@ -7,10 +7,7 @@ import Header from "~/components/Header";
 import Input from "~/components/Input";
 import { type SubmitHandler, useForm } from "react-hook-form";
 import { api } from "../../utils/api";
-import {
-  formValuesSchema,
-  formValuesWithIdSchema,
-} from "~/interface/FormValues";
+import { formValuesSchema } from "~/interface/FormValues";
 import type { FormValues } from "~/interface/FormValues";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
@@ -18,7 +15,7 @@ import PageContainer from "~/components/PageContainer";
 import IngredientList from "~/components/IngredientList";
 import FileInput from "~/components/FileInput";
 import { FormProvider } from "react-hook-form";
-import { z } from "zod";
+import { useEffect } from "react";
 
 const AddRecipe: NextPage = () => {
   const router = useRouter();
@@ -27,10 +24,6 @@ const AddRecipe: NextPage = () => {
     id: Number(router.query.recipeId),
   });
   const recipeData = recipe.data;
-
-  const ingredients = api.router.getIngredients.useQuery({
-    recipeId: Number(router.query.recipeId),
-  }).data;
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formValuesSchema),
@@ -54,6 +47,12 @@ const AddRecipe: NextPage = () => {
 
     await router.push("/recipes");
   };
+
+  useEffect(() => {
+    if (recipeData?.ingredients) {
+      form.setValue("ingredients", recipeData?.ingredients);
+    }
+  }, [form, recipeData?.ingredients]);
 
   if (recipe.isLoading) {
     return <></>;
@@ -86,7 +85,7 @@ const AddRecipe: NextPage = () => {
                     "image/jpeg": [".jpeg", ".jpg"],
                   }}
                   name="image"
-                  defaultValue={recipeData.image || undefined}
+                  defaultValue={recipeData.image}
                 />
                 <Flex width="100%">
                   <Input
@@ -114,7 +113,7 @@ const AddRecipe: NextPage = () => {
                   control={control}
                   register={register}
                   handleSubmit={handleSubmit}
-                  ingredients={ingredients}
+                  ingredients={recipeData.ingredients}
                 />
                 <Flex flexDirection="column" rowGap="16px">
                   <Heading size="2xl" textAlign="center">
@@ -126,7 +125,7 @@ const AddRecipe: NextPage = () => {
                     opacity=".9"
                     _focusVisible={{ opacity: "1" }}
                     {...register("description")}
-                    value={recipeData.description || ""}
+                    defaultValue={recipeData.description || ""}
                   />
                 </Flex>
               </Flex>

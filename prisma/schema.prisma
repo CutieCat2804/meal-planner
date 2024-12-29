@@ -57,14 +57,6 @@ model Recipe {
     duration    String?
     description String?
     portion     String?
-    ingredients Ingredient[]
+    ingredients String?
     image       String?
-}
-
-model Ingredient {
-    id         Int     @id @default(autoincrement())
-    ingredient String
-    quantity   String?
-    Recipe     Recipe? @relation(fields: [recipeId], references: [id])
-    recipeId     Int?
 }
